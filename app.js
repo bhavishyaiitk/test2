@@ -48,8 +48,9 @@ app.get('/suggest', (req, res) => {
             .filter(row => row.Course.toLowerCase().includes(searchText.toLowerCase()))
             .map(row => row.Course)
     )];
-    res.json(suggestions);
+    res.json(suggestions);  // Ensure you're sending JSON
 });
+
 
 // Get available years for a specific course
 app.get('/get_years', (req, res) => {
