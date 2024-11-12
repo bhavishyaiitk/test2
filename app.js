@@ -13,13 +13,13 @@ const data = xlsx.utils.sheet_to_json(worksheet);
 
 // Configure CORS to explicitly allow your client origin
 const corsOptions = {
-    origin: 'https://test-eight-teal-40.vercel.app/',  // Replace with your frontend’s Vercel domain or localhost for testing
+    origin: 'https://test2-lovat-nu.vercel.app',  // Replace with your frontend’s Vercel domain or localhost for testing
     methods: ['GET', 'POST'],                 // Allow specific methods
     allowedHeaders: ['Content-Type'],         // Allow specific headers
 };
 
 app.use(cors({
-    origin: 'https://test-eight-teal-40.vercel.app'  // Replace with your actual front-end domain
+    origin: 'https://test2-lovat-nu.vercel.app'  // Replace with your actual front-end domain
 }));
 
 
@@ -34,7 +34,7 @@ const formattedData = data.map(row => ({
 
 // Serve the main HTML page
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
+    res.sendFile(path.join(__dirname, './index.html'));
 });
 
 // Search for a course by name
