@@ -7,7 +7,7 @@ const app = express();
 app.use(cors());
 
 // Load and parse the Excel file
-const workbook = xlsx.readFile(path.join(__dirname, 'prof_grades.xlsx'));
+const workbook = xlsx.readFile(path.join(__dirname, './prof_grades.xlsx'));
 const worksheet = workbook.Sheets[workbook.SheetNames[0]];
 const data = xlsx.utils.sheet_to_json(worksheet);
 
