@@ -577,21 +577,6 @@ th {
 </head>
 <body>
 
-    <script>
-        // Detect if the device is mobile (screen width <= 768px)
-        function redirectBasedOnDevice() {
-            if (window.innerWidth <= 768) {
-                // If mobile, redirect to mobile_index.html
-                window.location.href = 'mobile_index.html';
-            } else {
-                
-            }
-        }
-        
-        // Call the function when the page loads
-        window.onload = redirectBasedOnDevice;
-    </script>
-
     <div class="title-container">
         <h1>Previous Years Grades IITK</h1>
     </div>
@@ -610,11 +595,9 @@ th {
     
     
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="script.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
-        let allCourses = []; // To store all courses fetched from the server
+    let allCourses = []; // To store all courses fetched from the server
     let visibleCoursesCount = 10; // Number of courses to show initially
     
     // Show or hide the sections based on button clicks
