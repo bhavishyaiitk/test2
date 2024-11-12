@@ -736,51 +736,45 @@ th {
     
     // Fetch course suggestions based on input, with section (Left or Right)
     async function afetchSuggestions(side) {
-        const query = document.getElementById(`courseInput${side}`).value;
-        const suggestionsBox = document.getElementById(`suggestions${side}`);
-        suggestionsBox.innerHTML = '';
-    
-        if (query.length === 0) {
-            suggestionsBox.style.display = 'none';
-            return;
-        }
-    
-        try {
-            const response = await fetch(`${window.location.origin}/suggest?query=${query}`);
+    const query = document.getElementById(`courseInput${side}`).value;
+    const suggestionsBox = document.getElementById(`suggestions${side}`);
+    suggestionsBox.innerHTML = '';
 
-            const suggestions = await response.json();
-            let count = 0;
-    
-            for (const course of suggestions) {
-                const div = document.createElement('div');
-                div.classList.add('suggestion-item');
-                div.textContent = course;
-                div.onclick = async () => {
-                    document.getElementById(`courseInput${side}`).value = course;
-                    suggestionsBox.innerHTML = '';
-                    await afetchYears(course, side);
-                };
-                suggestionsBox.appendChild(div);
-                count++;
-    
-                if (count === visibleCoursesCount) break;
-            }
-    
-            if (count === visibleCoursesCount) {
-                const div = document.createElement('div');
-                div.classList.add('suggestion-item');
-                div.textContent = `+ ${suggestions.length - visibleCoursesCount} more courses`;
-                div.onclick = () => ashowAllCourses(query, side);
-                suggestionsBox.appendChild(div);
-            }
-    
-            suggestionsBox.style.display = 'block';
-        } catch (error) {
-            console.error('Error fetching suggestions ni ho raha:', error);
-            suggestionsBox.innerHTML = `<p>Error fetching suggestions. Please try again.</p>`;
-            suggestionsBox.style.display = 'block';
-        }
+    if (query.length === 0) {
+        suggestionsBox.style.display = 'none';
+        return;
     }
+
+    const response = await fetch(`/suggest?query=${query}`);
+    const suggestions = await response.json();
+    let count = 0;
+
+    for (const course of suggestions) {
+        const div = document.createElement('div');
+        div.classList.add('suggestion-item');
+        div.textContent = course;
+        div.onclick = async () => {
+            document.getElementById(`courseInput${side}`).value = course;
+            suggestionsBox.innerHTML = '';
+            await afetchYears(course, side);
+        };
+        suggestionsBox.appendChild(div);
+        count++;
+
+        if (count === visibleCoursesCount) break;
+    }
+
+    if (count === visibleCoursesCount) {
+        const div = document.createElement('div');
+        div.classList.add('suggestion-item');
+        div.textContent = `+ ${suggestions.length - visibleCoursesCount} more courses`;
+        div.onclick = () => ashowAllCourses(query, side);
+        suggestionsBox.appendChild(div);
+    }
+
+    suggestionsBox.style.display = 'block';
+}
+
     
     // Show all related courses for "+ more courses" option, with side-specific ID
     async function ashowAllCourses(query, side) {
