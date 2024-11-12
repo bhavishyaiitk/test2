@@ -2,27 +2,47 @@ const express = require('express');
 const cors = require('cors');
 const xlsx = require('xlsx');
 const path = require('path');
+const fs = require('fs');
 
 const app = express();
 app.use(cors());
 
-// Load and parse the Excel file
-const workbook = xlsx.readFile(path.join(__dirname, './prof_grades.xlsx'));
-const worksheet = workbook.Sheets[workbook.SheetNames[0]];
-const data = xlsx.utils.sheet_to_json(worksheet);
+// Serve static files (index.html should be in the public directory)
+app.use(express.static(path.join(__dirname, 'public')));
 
-// Ensure consistency in data fields by trimming whitespace and converting types
-const formattedData = data.map(row => ({
-    Year: String(row.Year).trim(),
-    Semester: String(row.Semester).trim(),
-    Course: String(row.Course).trim(),
-    Grade: row.Grade,
-    Count: row.Count
-}));
+// Define a function to read the Excel file from the public directory
+function readExcelData() {
+    const filePath = path.join(__dirname, 'public', 'prof_grades.xlsx');
+    if (!fs.existsSync(filePath)) {
+        throw new Error("Excel file not found.");
+    }
+
+    const workbook = xlsx.readFile(filePath);
+    const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+    const data = xlsx.utils.sheet_to_json(worksheet);
+
+    // Ensure consistency in data fields by trimming whitespace and converting types
+    return data.map(row => ({
+        Year: String(row.Year).trim(),
+        Semester: String(row.Semester).trim(),
+        Course: String(row.Course).trim(),
+        Grade: row.Grade,
+        Count: row.Count
+    }));
+}
+
+// Read the data at the start of each request (or consider caching it)
+let formattedData;
+try {
+    formattedData = readExcelData();
+} catch (err) {
+    console.error("Error reading Excel data:", err);
+    formattedData = [];
+}
 
 // Serve the main HTML page
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 // Search for a course by name
@@ -48,9 +68,8 @@ app.get('/suggest', (req, res) => {
             .filter(row => row.Course.toLowerCase().includes(searchText.toLowerCase()))
             .map(row => row.Course)
     )];
-    res.json(suggestions);  // Ensure you're sending JSON
+    res.json(suggestions);
 });
-
 
 // Get available years for a specific course
 app.get('/get_years', (req, res) => {
@@ -97,5 +116,5 @@ app.get('/get_grades', (req, res) => {
     res.json(results);
 });
 
-// Vercel expects a handler function to be exported
+// Export the app as a handler for Vercel
 module.exports = app;
