@@ -746,7 +746,8 @@ th {
         }
     
         try {
-            const response = await fetch(`/suggest?query=${query}`);
+            const response = await fetch(`${window.location.origin}/suggest?query=${query}`);
+
             const suggestions = await response.json();
             let count = 0;
     
